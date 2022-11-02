@@ -11,6 +11,11 @@ public class BookController {
     @Autowired
     BookService bs ;
 
+    @PostMapping(value = "/create")
+    BookMapper createBook(@RequestBody Book b){
+        return bs.createBook(b);
+    }
+
     @GetMapping(value = "/all")
     Iterable<BookMapper> allBooks(){
         return bs.allBooks() ;
@@ -18,12 +23,7 @@ public class BookController {
 
     @GetMapping(value = "/{id}")
     BookMapper oneBook(@PathVariable Integer id){
-       return bs.oneBook(id);
-    }
-
-    @PostMapping(value = "/create")
-    Book createBook(@RequestBody Book b){
-        return bs.createBook(b);
+        return bs.oneBook(id);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -32,6 +32,11 @@ public class BookController {
         if(b)
             return "Book Deleted Successfully";
         return "Book Is Under Use";
+    }
+
+    @PutMapping(value = "/{id}")
+    BookMapper updateBook(@PathVariable Integer id , @RequestBody Book b){
+        return bs.updateBook(id , b);
     }
 
 }

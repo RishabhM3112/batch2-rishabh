@@ -19,10 +19,6 @@ public class User {
     )
     private Set<Book> books = new HashSet<>();
 
-    public void addBook(Book b) {
-        books.add(b) ;
-    }
-
     public String getName() {
         return name;
     }
@@ -52,19 +48,20 @@ public class User {
     public User() {
     }
 
-
     public void setBooks(Set<Book> books) {
         this.books = books;
     }
-
-    public Set<Book> removeBook(Integer bookId) {
+    public void addBook(Book b) {
+        this.books.add(b) ;
+    }
+    public void removeBook(Integer bookId) {
         if(!this.books.isEmpty())
-        for (Book b:
-             this.books) {
-            if(b.getId() == bookId){
-                this.books.remove(b);
+            for (Book b:
+                    this.books) {
+                if(b.getId() == bookId){
+                    this.books.remove(b);
+                }
             }
-        }
-        return this.books;
+
     }
 }

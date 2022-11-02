@@ -13,7 +13,7 @@ public class UserController {
     UserService us ;
 
     @GetMapping(value = "/all")
-    Iterable<User> allUsers(){
+    Iterable<UserMapper> allUsers(){
         return us.allUsers();
     }
 
@@ -23,13 +23,19 @@ public class UserController {
     }
 
     @PostMapping(value = "/create")
-    User createUser(@RequestBody User u){
+    UserMapper createUser(@RequestBody User u){
         return us.createUser(u);
     }
 
     @PostMapping(value = "{userId}/book")
-    Book addBook(@PathVariable Integer userId ,@RequestBody Book b ){
+    UserMapper addBook(@PathVariable Integer userId ,@RequestBody Book b ){
         return us.addBook(userId,b);
+    }
+
+    @GetMapping(value = "{userId}/book/{bookId}")
+    UserMapper putBook(@PathVariable Integer userId ,@PathVariable Integer bookId ){
+        UserMapper u = us.putBook(userId,bookId);
+        return u;
     }
 
     @DeleteMapping(value = "{userId}/book/{bookId}")
