@@ -1,5 +1,4 @@
 package com.bookManagement.service;
-
 import com.bookManagement.CustomMapper.UserMapper;
 import com.bookManagement.model.Book;
 import com.bookManagement.model.User;
@@ -8,6 +7,8 @@ import com.bookManagement.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,56 +19,57 @@ public class UserService {
     @Autowired
     BookRepo br ;
 
+    public Iterable<UserMapper> allUsers(){
+        List<User> lu = ur.findAll() ;
+        Set<UserMapper> sum = new HashSet<>();
+        if(!lu.isEmpty())
+            for (User u:
+                    lu) {
+                sum.add(utility(u));
+            }
 
-    public Iterable<User> allUsers(){
-        return ur.findAll() ;
+        return sum ;
     }
-
 
     public UserMapper oneUser(Integer id){
-        Optional<User> uo = ur.findById(id);
-        User u = uo.get();
-        UserMapper um = new UserMapper();
-        um.userId = u.getUserId();
-        um.name = u.getName() ;
-        for (Book b: u.getBooks()) {
-            um.books.add(b.getId() + " - " + b.getName());
-        }
-        return um;
+        User uo = ur.findById(id).orElse(new User());
+        return utility(uo);
     }
 
-    public User createUser(User u){
-        return ur.save(u);
+    public UserMapper createUser(User u){
+        return utility(ur.save(u));
     }
 
-
-    public Book addBook(Integer userId, Book b){
-        Optional<User> u = ur.findById(userId);
+    public UserMapper addBook(Integer userId, Book b){
+        User user = ur.findById(userId).orElse(null);
         br.save(b);
-        if(u.isPresent()){
-            User user = u.get();
-            user.addBook(b);
-            ur.save(user);
-            return b;
-        }
-        return b ;
+        user.addBook(b);
+        ur.save(user);
+        return utility(user);
+    }
+
+    public UserMapper putBook(Integer userId, Integer bookId) {
+        User user = ur.findById(userId).orElse(null);
+        Book b = br.findById(bookId).orElse(null);
+        user.addBook(b);
+        ur.save(user);
+        return utility(user);
     }
 
     public UserMapper deleteBook(Integer userId, Integer bookId) {
-        Optional<User> u = ur.findById(userId);
-        if(u.isPresent()){
-            User user = u.get();
-            Set<Book> sb = user.removeBook(bookId);
-            user.setBooks(sb);
-            ur.save(user);
-            UserMapper um = new UserMapper();
-            um.userId = user.getUserId();
-            um.name = user.getName() ;
-            for (Book b: user.getBooks()) {
-                um.books.add(b.getId() + " - " + b.getName());
-            }
-            return um;
+        User user = ur.findById(userId).orElse(null);
+        user.removeBook(bookId);
+        ur.save(user);
+        return utility(user);
+    }
+
+    public UserMapper utility(User user){
+        UserMapper um = new UserMapper();
+        um.userId = user.getUserId();
+        um.name = user.getName() ;
+        for (Book b: user.getBooks()) {
+            um.books.add(b.getId() + " - " + b.getName() + "  - " + b.getCategory().getName());
         }
-        return null ;
+        return um ;
     }
 }
