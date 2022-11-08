@@ -45,6 +45,11 @@ public class User {
         this.userId = userId;
         this.name = name;
     }
+
+    public User(String name) {
+        this.name = name;
+    }
+
     public User() {
     }
 
