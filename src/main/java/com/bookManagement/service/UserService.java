@@ -32,7 +32,8 @@ public class UserService {
     }
 
     public UserMapper oneUser(Integer id){
-        User uo = ur.findById(id).orElse(new User());
+       User uo = ur.findById(id).orElse(new User());
+        //User uo = ur.findById(id).get();
         return utility(uo);
     }
 
@@ -63,12 +64,14 @@ public class UserService {
         return utility(user);
     }
 
-    public UserMapper utility(User user){
+    public static UserMapper utility(User user){
         UserMapper um = new UserMapper();
-        um.userId = user.getUserId();
-        um.name = user.getName() ;
-        for (Book b: user.getBooks()) {
-            um.books.add(b.getId() + " - " + b.getName() + "  - " + b.getCategory().getName());
+        if(user != null) {
+            um.userId = user.getUserId();
+            um.name = user.getName();
+            for (Book b : user.getBooks()) {
+                um.books.add(b.getId() + " - " + b.getName() + "  - " + b.getCategory().getName());
+            }
         }
         return um ;
     }

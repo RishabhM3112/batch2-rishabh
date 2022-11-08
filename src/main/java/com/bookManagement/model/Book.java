@@ -23,6 +23,7 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category ;
 
+
     public Category getCategory() {
         return category;
     }
@@ -52,4 +53,9 @@ public class Book {
     public Book() {
     }
 
+    public Book(Integer bookId, String name, Category category) {
+        this.bookId = bookId;
+        this.name = name;
+        this.category = category;
+    }
 }
