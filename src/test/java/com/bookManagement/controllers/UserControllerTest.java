@@ -26,7 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,25 +44,6 @@ public class UserControllerTest {
     @InjectMocks
     UserController userController ;
 
-    UserMapper u1 = new UserMapper(1,
-                                   "Rishabh",
-                                    new HashSet<String>() {
-                                        {
-                                            add("Harry Potter");
-                                            add("Jurassic Park");
-                                        }
-                                    }
-                                 );
-    UserMapper u2 = new UserMapper(2,
-                                   "Aditya",
-                                   new HashSet<String>() {
-                                          {
-                                             add("B");
-                                             add("A");
-                                          }
-                                   }
-                                  );
-
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
@@ -70,8 +52,26 @@ public class UserControllerTest {
 
     @Test
     public void getAllUser() throws Exception{
+        UserMapper u1 = new UserMapper(1,
+                "Rishabh",
+                new HashSet<String>() {
+                    {
+                        add("Harry Potter");
+                        add("Jurassic Park");
+                    }
+                }
+        );
+        UserMapper u2 = new UserMapper(2,
+                "Aditya",
+                new HashSet<String>() {
+                    {
+                        add("B");
+                        add("A");
+                    }
+                }
+        );
         List<UserMapper> lum = new ArrayList<>(Arrays.asList(u1,u2));
-        Mockito.when(userService.allUsers()).thenReturn(lum);
+        when(userService.allUsers()).thenReturn(lum);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/app/user/all")
@@ -84,7 +84,25 @@ public class UserControllerTest {
 
     @Test
     public void oneUser() throws Exception{
-        Mockito.when(userService.oneUser(1)).thenReturn(u1);
+        UserMapper u1 = new UserMapper(1,
+                "Rishabh",
+                new HashSet<String>() {
+                    {
+                        add("Harry Potter");
+                        add("Jurassic Park");
+                    }
+                }
+        );
+        UserMapper u2 = new UserMapper(2,
+                "Aditya",
+                new HashSet<String>() {
+                    {
+                        add("B");
+                        add("A");
+                    }
+                }
+        );
+        when(userService.oneUser(1)).thenReturn(u1);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/app/user/1")
@@ -105,7 +123,9 @@ public class UserControllerTest {
         System.out.println(objectWriter.writeValueAsString(u));
         System.out.println(objectWriter.writeValueAsString(u3));
 
-        Mockito.when(userService.createUser(u)).thenReturn(u3);
+        User n = new User("Sourabh");
+
+        Mockito.when(userService.createUser(Mockito.any(User.class))).thenReturn(u3);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/app/user/create")
@@ -134,8 +154,7 @@ public class UserControllerTest {
         System.out.println(objectWriter.writeValueAsString(u3));
 
 
-        Mockito.when(userService.addBook(1,b)).thenReturn(u3);
-        //doReturn(u3).when(userService).addBook(1, b);
+        when(userService.addBook(Mockito.eq(1),Mockito.any(Book.class))).thenReturn(u3);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/app/user/1/book")
@@ -145,7 +164,7 @@ public class UserControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$",notNullValue()))
-               /* .andExpect(jsonPath("$.name" , is("Rishabh")))*/;
+                .andExpect(jsonPath("$.name" , is("Rishabh")));
     }
 
     @Test
@@ -164,7 +183,7 @@ public class UserControllerTest {
         System.out.println(objectWriter.writeValueAsString(b));
         System.out.println(objectWriter.writeValueAsString(u3));
 
-        Mockito.when(userService.putBook(1,1)).thenReturn(u3);
+        when(userService.putBook(1,1)).thenReturn(u3);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/app/user/1/book/1")
@@ -174,8 +193,6 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$",notNullValue()))
                 .andExpect(jsonPath("$.name" , is("Rishabh")));
     }
-
-
     @Test
     public void removeBook() throws Exception{
         HashSet<String> s = new HashSet<String>();
@@ -183,7 +200,7 @@ public class UserControllerTest {
 
         System.out.println(objectWriter.writeValueAsString(u3));
 
-        Mockito.when(userService.deleteBook(1,1)).thenReturn(u3);
+        when(userService.deleteBook(1,1)).thenReturn(u3);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/app/user/1/book/1")
