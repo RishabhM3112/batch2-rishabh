@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping(value = "/create")
     UserMapper createUser(@RequestBody User u){
-        return us.createUser(u);
+        return us.createUser(u) ;
     }
 
     @PostMapping(value = "{userId}/book")
