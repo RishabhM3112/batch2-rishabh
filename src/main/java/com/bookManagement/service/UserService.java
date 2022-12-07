@@ -33,8 +33,8 @@ public class UserService {
 
     public UserMapper oneUser(Integer id){
        User uo = ur.findById(id).orElse(new User());
-        //User uo = ur.findById(id).get();
-        return utility(uo);
+
+       return utility(uo);
     }
 
     public UserMapper createUser(User u){
