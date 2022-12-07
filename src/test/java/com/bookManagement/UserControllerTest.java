@@ -1,6 +1,7 @@
-package com.bookManagement.controllers;
+package com.bookManagement;
 
 import com.bookManagement.CustomMapper.UserMapper;
+import com.bookManagement.controllers.UserController;
 import com.bookManagement.model.Book;
 import com.bookManagement.model.Category;
 import com.bookManagement.model.User;
@@ -120,12 +121,9 @@ public class UserControllerTest {
 
         UserMapper u3 = UserService.utility(u);
         u3.userId = 1 ;
-        System.out.println(objectWriter.writeValueAsString(u));
-        System.out.println(objectWriter.writeValueAsString(u3));
-
         User n = new User("Sourabh");
 
-        Mockito.when(userService.createUser(Mockito.any(User.class))).thenReturn(u3);
+        when(userService.createUser(Mockito.any(User.class))).thenReturn(u3);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/app/user/create")
@@ -148,11 +146,6 @@ public class UserControllerTest {
             }
         };
         UserMapper u3 = new UserMapper(1,"Rishabh", books);
-
-
-        System.out.println(objectWriter.writeValueAsString(b));
-        System.out.println(objectWriter.writeValueAsString(u3));
-
 
         when(userService.addBook(Mockito.eq(1),Mockito.any(Book.class))).thenReturn(u3);
 
@@ -179,9 +172,6 @@ public class UserControllerTest {
         };
         UserMapper u3 = new UserMapper(1,"Rishabh", s);
 
-
-        System.out.println(objectWriter.writeValueAsString(b));
-        System.out.println(objectWriter.writeValueAsString(u3));
 
         when(userService.putBook(1,1)).thenReturn(u3);
 

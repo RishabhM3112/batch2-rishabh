@@ -1,10 +1,11 @@
-package com.bookManagement.service;
+package com.bookManagement;
 
 import com.bookManagement.model.Book;
 import com.bookManagement.model.Category;
 import com.bookManagement.model.User;
 import com.bookManagement.repo.BookRepo;
 import com.bookManagement.repo.UserRepo;
+import com.bookManagement.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +30,6 @@ public class UserServiceTest {
 
     @Before
     public void setUp(){
-
         MockitoAnnotations.initMocks(this);
     }
 
@@ -49,6 +49,7 @@ public class UserServiceTest {
     public void oneUser(){
         User user1 = new User(1 ,"Rishabh") ;
         user1.addBook(new Book( 1 , "Harry Potter" , new Category("Magic") ));
+
         when(ur.findById(1)).thenReturn(Optional.of(user1));
 
         assertEquals("Rishabh" , us.oneUser(1).name) ;
@@ -61,6 +62,7 @@ public class UserServiceTest {
     public void createUser(){
 
         User user1 = new User(1 ,"Rishabh") ;
+
         when(ur.save(user1)).thenReturn(user1);
 
         assertEquals(1 , us.createUser(user1).userId) ;

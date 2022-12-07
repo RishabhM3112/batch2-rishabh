@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CategoryService {
@@ -20,9 +21,12 @@ public class CategoryService {
 
     public Iterable<Category> getAllPresent() {
         List<Category> lc = (List<Category>) getAll();
-        for (Category c : lc){
-            if(c.getBooks().isEmpty()){
-                lc.remove(c);
+
+        if(Objects.nonNull(lc) && !lc.isEmpty()) {
+            for (Category c : lc) {
+                if (Objects.nonNull(c) && c.getBooks().isEmpty()) {
+                    lc.remove(c);
+                }
             }
         }
         return lc ;
